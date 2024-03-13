@@ -57,7 +57,8 @@ papersize_values = {'A0' : (33.1,46.8),
                     'letter' : (8.5,11)
                     }
 
-leadNames_12 = ["III", 'aVF', 'V3', 'V6', 'II', 'aVL', 'V2', 'V5', 'I', 'aVR', 'V1', 'V4']
+#leadNames_12 = ["III", 'aVF', 'V3', 'V6', 'II', 'aVL', 'V2', 'V5', 'I', 'aVR', 'V1', 'V4']
+leadNames_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
 
 
 def inches_to_dots(value,resolution):
