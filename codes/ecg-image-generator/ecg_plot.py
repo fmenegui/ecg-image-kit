@@ -441,8 +441,6 @@ def ecg_plot(
     ax.text(4, 0.5, '10mm/mV', fontsize=lead_fontsize)
     
     plt.savefig(os.path.join(output_dir,tail +'.png'),dpi=resolution)
-    plt.savefig('tmp.png',dpi=resolution)
-    1/0
     plt.close(fig)
     plt.clf()
     plt.cla()
