@@ -57,8 +57,14 @@ papersize_values = {'A0' : (33.1,46.8),
                     'letter' : (8.5,11)
                     }
 
-#leadNames_12 = ["III", 'aVF', 'V3', 'V6', 'II', 'aVL', 'V2', 'V5', 'I', 'aVR', 'V1', 'V4']
-leadNames_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
+def adapt_lead_names(cols):
+    lst = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
+    elements_per_row = len(lst) // cols
+    rows = [lst[i:i+elements_per_row] for i in range(0, len(lst), elements_per_row)]
+    transposed = list(map(list, zip(*rows)))
+    reversed_list = transposed[::-1]
+    flattened = [item for sublist in reversed_list for item in sublist]
+    return flattened
 
 
 def inches_to_dots(value,resolution):
@@ -129,6 +135,7 @@ def ecg_plot(
     leads = len(lead_index)
 
     rows  = int(ceil(leads/columns))
+    leadNames_12 = adapt_lead_names(columns)
 
     if(full_mode!='None'):
         rows+=1
@@ -434,6 +441,8 @@ def ecg_plot(
     ax.text(4, 0.5, '10mm/mV', fontsize=lead_fontsize)
     
     plt.savefig(os.path.join(output_dir,tail +'.png'),dpi=resolution)
+    plt.savefig('tmp.png',dpi=resolution)
+    1/0
     plt.close(fig)
     plt.clf()
     plt.cla()
