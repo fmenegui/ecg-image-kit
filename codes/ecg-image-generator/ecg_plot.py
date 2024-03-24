@@ -437,8 +437,8 @@ def ecg_plot(
                 y_offset -= 0.5
 
     #change x and y res
-    ax.text(2, 0.5, '25mm/s', fontsize=lead_fontsize)
-    ax.text(4, 0.5, '10mm/mV', fontsize=lead_fontsize)
+    #ax.text(2, 0.5, '25mm/s', fontsize=lead_fontsize)
+    #ax.text(4, 0.5, '10mm/mV', fontsize=lead_fontsize)
     
     plt.savefig(os.path.join(output_dir,tail +'.png'),dpi=resolution)
     plt.close(fig)
