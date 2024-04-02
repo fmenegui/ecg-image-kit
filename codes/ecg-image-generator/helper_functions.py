@@ -155,6 +155,10 @@ def get_adc_gains(header, leads):
                 try:
                     adc_gains[j] = float(entries[2].split('/')[0])
                 except:
+                    try:
+                        adc_gains[j] = float(entries[2].split('/')[0].split('(0)')[0])
+                    except:
+                        pass
                     pass
         else:
             break
