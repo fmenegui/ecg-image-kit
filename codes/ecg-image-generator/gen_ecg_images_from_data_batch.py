@@ -14,7 +14,8 @@ warnings.filterwarnings("ignore")
 
 def get_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input_directory', type=str, required=True)
+
+    parser.add_argument('-i', '--input_directory', type=str, required=True) 
     parser.add_argument('-o', '--output_directory', type=str, required=True)
     parser.add_argument('-se', '--seed', type=int, required=False, default = -1)
     parser.add_argument('--num_leads',type=str,default='twelve')
@@ -71,6 +72,8 @@ def get_parser():
     parser.add_argument('--wrinkles',action='store_true',default=False)
     parser.add_argument('--augment',action='store_true',default=False)
     parser.add_argument('--bbox',action='store_true',default=False)
+    parser.add_argument('--background_only',action='store_true',default=False)
+    parser.add_argument('--leads_only',action='store_true',default=False)
 
     return parser
 
@@ -92,6 +95,49 @@ def run(args):
 
         i = 0
         full_header_files, full_recording_files = find_records(args.input_directory, original_output_dir)
+        
+        if args.leads_only:
+            args.pad_inches = 0
+            args.print_header = False
+            args.link = ''
+            args.num_words = 5
+            args.x_offset = 30
+            args.y_offset = 30
+            args.handwriting_size_factor = 0.2
+            args.crease_angle = 90
+            args.num_creases_vertically = 10
+            args.num_creases_horizontally = 10
+            args.rotate = 0
+            args.noise = 50
+            args.crop = 0.01
+            args.temperature = 40000
+            args.random_resolution = False
+            args.random_padding = False
+            args.random_grid_color = False
+            args.standard_grid_color = 5
+            args.random_dc = 0
+            args.random_grid_present = 0
+            args.random_add_header = 0
+            args.random_bw = 0
+            args.deterministic_lead = False
+            args.store_text_bounding_box = False
+            args.store_config = False
+            args.deterministic_offset = False
+            args.deterministic_num_words = False
+            args.deterministic_hw_size = False
+            args.deterministic_angle = False
+            args.deterministic_vertical = False
+            args.deterministic_horizontal = False
+            args.deterministic_rot = False
+            args.deterministic_noise = False
+            args.deterministic_crop = False
+            args.deterministic_temp = False
+            args.fully_random = False
+            args.hw_text = False
+            args.wrinkles = False
+            args.augment = False
+            args.bbox = True
+            args.background_only = False
         
         for full_header_file, full_recording_file in zip(full_header_files, full_recording_files):
             filename = full_recording_file

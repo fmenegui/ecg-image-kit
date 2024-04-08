@@ -14,6 +14,7 @@ from random import randint
 import matplotlib.patches as patches
 import csv
 import matplotlib.patches as patches
+from lead2color import lead2colorMPL as lead2color
 
 standard_values = {'y_grid_size' : 0.5,
                    'x_grid_size' : 0.2,
@@ -99,7 +100,8 @@ def ecg_plot(
         x_grid = 0,
         standard_colours = False,
         bbox = False,
-        print_txt=False
+        print_txt=False,
+        leads_only=False
         ):
     #Inputs :
     #ecg - Dictionary of ecg signal with lead names as keys
@@ -329,7 +331,7 @@ def ecg_plot(
         t1 = ax.plot(np.arange(0,len(ecg[leadName])*step,step) + x_offset + dc_offset + x_gap, 
                 ecg[leadName] + y_offset,
                 linewidth=line_width, 
-                color=color_line
+                color=color_line if leads_only is False else lead2color[leadName]
                 )
         if (bbox):
             renderer1 = fig.canvas.get_renderer()
@@ -388,7 +390,7 @@ def ecg_plot(
         t1 = ax.plot(np.arange(0,len(ecg['full'+full_mode])*step,step) + x_gap + dc_full_lead_offset, 
                     ecg['full'+full_mode] + row_height/2-lead_name_offset + 0.8,
                     linewidth=line_width, 
-                    color=color_line
+                    color=color_line if leads_only is False else lead2color['full'+full_mode]
                     )
 
         if (bbox):

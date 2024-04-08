@@ -111,7 +111,7 @@ def run_single_file(args):
         else:
             bernoulli_add_print = bernoulli(args.random_add_header)
         
-        font = os.path.join('Fonts',random.choice(os.listdir("Fonts")))
+        # font = os.path.join('Fonts',random.choice(os.listdir("Fonts")))
         
         if(args.random_bw == 0):
             if args.random_grid_color == False:
@@ -121,7 +121,7 @@ def run_single_file(args):
         else:
             standard_colours = False
 
-        out_array = get_paper_ecg(input_file=filename,header_file=header, start_index=args.start_index, store_configs=args.store_config, store_text_bbox=args.store_text_bounding_box, output_directory=args.output_directory,resolution=resolution,papersize=papersize,add_lead_names=lead,add_dc_pulse=bernoulli_dc,add_bw=bernoulli_bw,show_grid=bernoulli_grid,add_print=bernoulli_add_print,pad_inches=padding,font_type=font,standard_colours=standard_colours,full_mode=args.full_mode,bbox = args.bbox, columns = args.num_columns, seed=args.seed)
+        out_array = get_paper_ecg(input_file=filename,header_file=header, start_index=args.start_index, store_configs=args.store_config, store_text_bbox=args.store_text_bounding_box, output_directory=args.output_directory,resolution=resolution,papersize=papersize,add_lead_names=lead,add_dc_pulse=bernoulli_dc,add_bw=bernoulli_bw,show_grid=bernoulli_grid,add_print=bernoulli_add_print,pad_inches=padding,font_type=None,standard_colours=standard_colours,full_mode=args.full_mode,bbox = args.bbox, columns = args.num_columns, background_only = args.background_only, leads_only = args.leads_only, seed=args.seed)
         
         for out in out_array:
             if(args.fully_random):
