@@ -265,7 +265,7 @@ def write_wfdb_file(ecg_frame, filename, rate, header_file, write_dir, full_mode
 
     for i, lead in enumerate(full_leads):
         leads.append(lead)
-        if lead == full_mode:
+        if lead in full_mode:
             lead = 'full' + lead
         adc_gn = header.adc_gain[i]
 

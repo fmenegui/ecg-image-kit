@@ -123,14 +123,18 @@ def ecg_plot(
     #secs represents how many seconds of ecg are plotted
     #leads represent number of leads in the ecg
     #rows are calculated based on corresponding number of leads and number of columns
-
+    print(ecg.keys())
     matplotlib.use("Agg")
     randindex = randint(0,99)
     random_sampler = random.uniform(-0.05,0.004)
 
     #check if the ecg dict is empty
-    if ecg == {}:
-        return 
+    if full_mode=='None': full_mode = None
+    elif 'None' in full_mode: full_mode = None
+    elif None in full_mode: full_mode = None
+    else: full_mode = full_mode
+    
+    if ecg == {}: return 
 
     secs = len(list(ecg.items())[0][1])/sample_rate
 
@@ -139,10 +143,13 @@ def ecg_plot(
     rows  = int(ceil(leads/columns))
     leadNames_12 = adapt_lead_names(columns)
 
-    if(full_mode!='None'):
-        rows+=1
-        leads+=1
+    print('full_mode:', full_mode)
+    if(full_mode is not None):
+        rows+=len(full_mode)
+        leads+=len(full_mode)
     
+    print('rows:', rows)
+    print('leads:', leads)
     #Grid calibration
     #Each big grid corresponds to 0.2 seconds and 0.5 mV
     #To do: Select grid size in a better way
@@ -166,8 +173,7 @@ def ecg_plot(
     y_grid_dots = y_grid*resolution
     x_grid_dots = x_grid*resolution
  
-    #row_height = height * y_grid_size/(y_grid*(rows+2))
-    row_height = (height * y_grid_size/y_grid)/(rows+2)
+    row_height = height * y_grid_size/(y_grid*(rows+2))
     x_max = width * x_grid_size / x_grid
     x_min = 0
     x_gap = np.floor(((x_max - (columns*secs))/2)/0.2)*0.2
@@ -249,9 +255,10 @@ def ecg_plot(
 
     dc_offset = 0
     if(show_dc_pulse):
-        dc_offset = sample_rate*standard_values['dc_offset_length']*step
+        dc_offset = sample_rate*standard_values['dc_offset_length']*step + 4*step
     #Iterate through each lead in lead_index array.
-    y_offset = (row_height/2)
+    y_offset = (row_height/1)* (0 if full_mode is None else len(full_mode))
+    print('y_offset:', y_offset)
     x_offset = 0
 
     text_bbox = []
@@ -282,7 +289,7 @@ def ecg_plot(
         #Print lead name at .5 ( or 5 mm distance) from plot
         if(show_lead_name):
                     t1 = ax.text(x_offset + x_gap, 
-                            y_offset-lead_name_offset - 0.2, 
+                            y_offset-lead_name_offset - 0.2*0, 
                             leadName, 
                             fontsize=lead_fontsize)
                     
@@ -313,7 +320,7 @@ def ecg_plot(
                     x2, y2 = bb.x1*resolution/fig.dpi, bb.y1*resolution/fig.dpi
                     
                 
-        elif(columns == 4 and i == 0 or i == 4 or i == 8):
+        elif(i%columns==0):
             if(show_dc_pulse):
                 #Plot dc pulse for 0.2 seconds with 2 trailing and leading zeros to get the pulse
                 t1 = ax.plot(np.arange(0,sample_rate*standard_values['dc_offset_length']*step + 4*step,step) + x_offset + x_gap,
@@ -351,65 +358,75 @@ def ecg_plot(
         end_ind = round((x_offset + dc_offset + x_gap + len(ecg[leadName])*step)*x_grid_dots/x_grid_size)
 
     #Plotting longest lead for 12 seconds
-    if(full_mode!='None'):
-        if(show_lead_name):
-            t1 = ax.text(x_gap, 
-                    row_height/2-lead_name_offset, 
-                    full_mode, 
-                    fontsize=lead_fontsize)
-            
-            if (store_text_bbox):
-                renderer1 = fig.canvas.get_renderer()
-                transf = ax.transData.inverted()
-                bb = t1.get_window_extent(renderer = fig.canvas.renderer)
-                x1 = bb.x0*resolution/fig.dpi      
-                y1 = bb.y0*resolution/fig.dpi   
-                x2 = bb.x1*resolution/fig.dpi     
-                y2 = bb.y1*resolution/fig.dpi              
-                text_bbox.append([x1, y1, x2, y2, full_mode])
+    print('---')
+    y_offset = 0
+    if( (full_mode is not None) and (full_mode!="None") and (None not in full_mode) and ("None" not in full_mode)):
+        print(full_mode)
+        
+        for k, f in enumerate(reversed(full_mode)):
+            print('iter', k, f)
+            y_offset += row_height
+            if(show_lead_name):
+                t1 = ax.text(x_gap, 
+                        y_offset-lead_name_offset, 
+                        f, 
+                        fontsize=lead_fontsize)
                 
-
-        if(show_dc_pulse):
-            t1 = ax.plot(x_range + x_gap,
-                    dc_pulse + row_height/2-lead_name_offset + 0.8,
-                    linewidth=line_width * 1.5, 
-                    color=color_line
-                    )
-            
-            if (bbox):
+                if (store_text_bbox):
                     renderer1 = fig.canvas.get_renderer()
                     transf = ax.transData.inverted()
-                    bb = t1[0].get_window_extent()                                                
+                    bb = t1.get_window_extent(renderer = fig.canvas.renderer)
+                    x1 = bb.x0*resolution/fig.dpi      
+                    y1 = bb.y0*resolution/fig.dpi   
+                    x2 = bb.x1*resolution/fig.dpi     
+                    y2 = bb.y1*resolution/fig.dpi              
+                    text_bbox.append([x1, y1, x2, y2, f])
+                    
+
+            if(show_dc_pulse):
+                t1 = ax.plot(x_range + x_gap,
+                        dc_pulse + y_offset,
+                        linewidth=line_width * 1.5, 
+                        color=color_line
+                        )
+                
+                
+                
+                if (bbox):
+                        renderer1 = fig.canvas.get_renderer()
+                        transf = ax.transData.inverted()
+                        bb = t1[0].get_window_extent()                                                
+                        x1, y1 = bb.x0*resolution/fig.dpi, bb.y0*resolution/fig.dpi
+                        x2, y2 = bb.x1*resolution/fig.dpi, bb.y1*resolution/fig.dpi
+            
+            dc_full_lead_offset = 0 
+            if(show_dc_pulse):
+                dc_full_lead_offset = sample_rate*standard_values['dc_offset_length']*step + 4*step
+            
+            print('plot', 'full'+f)                   
+            t1 = ax.plot(np.arange(0,len(ecg['full'+f])*step,step) + x_gap + dc_full_lead_offset, 
+                        ecg['full'+f] + y_offset,
+                        linewidth=line_width, 
+                        color=color_line if leads_only is False else lead2color['full'+f]
+                        )
+
+            if (bbox):
+                renderer1 = fig.canvas.get_renderer()
+                transf = ax.transData.inverted()
+                bb = t1[0].get_window_extent()  
+                if show_dc_pulse == False:                                           
                     x1, y1 = bb.x0*resolution/fig.dpi, bb.y0*resolution/fig.dpi
                     x2, y2 = bb.x1*resolution/fig.dpi, bb.y1*resolution/fig.dpi
-        
-        dc_full_lead_offset = 0 
-        if(show_dc_pulse):
-            dc_full_lead_offset = sample_rate*standard_values['dc_offset_length']*step
-        
-        t1 = ax.plot(np.arange(0,len(ecg['full'+full_mode])*step,step) + x_gap + dc_full_lead_offset, 
-                    ecg['full'+full_mode] + row_height/2-lead_name_offset + 0.8,
-                    linewidth=line_width, 
-                    color=color_line if leads_only is False else lead2color['full'+full_mode]
-                    )
+                else:
+                    y1 = min(y1, bb.y0*resolution/fig.dpi)
+                    y2 = max(y2, bb.y1*resolution/fig.dpi)
+                    x2 = bb.x1*resolution/fig.dpi
 
-        if (bbox):
-            renderer1 = fig.canvas.get_renderer()
-            transf = ax.transData.inverted()
-            bb = t1[0].get_window_extent()  
-            if show_dc_pulse == False:                                           
-                x1, y1 = bb.x0*resolution/fig.dpi, bb.y0*resolution/fig.dpi
-                x2, y2 = bb.x1*resolution/fig.dpi, bb.y1*resolution/fig.dpi
-            else:
-                y1 = min(y1, bb.y0*resolution/fig.dpi)
-                y2 = max(y2, bb.y1*resolution/fig.dpi)
-                x2 = bb.x1*resolution/fig.dpi
-
-            lead_bbox.append([x1, y1, x2, y2, 1])
+                lead_bbox.append([x1, y1, x2, y2, 1])
 
 
-        start_ind = round((dc_full_lead_offset + x_gap)*x_grid_dots/x_grid_size)
-        end_ind = round((dc_full_lead_offset + x_gap + len(ecg['full'+full_mode])*step)*x_grid_dots/x_grid_size)
+            start_ind = round((dc_full_lead_offset + x_gap)*x_grid_dots/x_grid_size)
+            end_ind = round((dc_full_lead_offset + x_gap + len(ecg['full'+f])*step)*x_grid_dots/x_grid_size)
 
     head, tail = os.path.split(rec_file_name)
     rec_file_name = os.path.join(output_dir, tail)
@@ -442,6 +459,7 @@ def ecg_plot(
     #ax.text(2, 0.5, '25mm/s', fontsize=lead_fontsize)
     #ax.text(4, 0.5, '10mm/mV', fontsize=lead_fontsize)
     
+    print('lead_box:', lead_bbox)
     plt.savefig(os.path.join(output_dir,tail +'.png'),dpi=resolution)
     plt.close(fig)
     plt.clf()
