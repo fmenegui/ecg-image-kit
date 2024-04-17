@@ -65,6 +65,7 @@ def generate_template(header_file):
             if 'Age' in attributes.keys():
                 attributes['DOB'] += '(Age: ' + attributes['Age'] + ' yrs)'
         else:
+            if 'Age' not in attributes.keys(): attributes['Age'] = str(random.randint(1, 100))
             attributes['DOB'] = 'Age: ' + attributes['Age'] + ' yrs'
 
         if attributes['Weight'] != '':

@@ -111,7 +111,7 @@ def run_single_file(args):
         else:
             bernoulli_add_print = bernoulli(args.random_add_header)
         
-        # font = os.path.join('Fonts',random.choice(os.listdir("Fonts")))
+        font = os.path.join('Fonts',random.choice(os.listdir("Fonts")))
         
         if(args.random_bw == 0):
             if args.random_grid_color == False:

@@ -123,7 +123,7 @@ def ecg_plot(
     #secs represents how many seconds of ecg are plotted
     #leads represent number of leads in the ecg
     #rows are calculated based on corresponding number of leads and number of columns
-    print(ecg.keys())
+    # print(ecg.keys())
     matplotlib.use("Agg")
     randindex = randint(0,99)
     random_sampler = random.uniform(-0.05,0.004)
@@ -143,13 +143,13 @@ def ecg_plot(
     rows  = int(ceil(leads/columns))
     leadNames_12 = adapt_lead_names(columns)
 
-    print('full_mode:', full_mode)
+    # print('full_mode:', full_mode)
     if(full_mode is not None):
         rows+=len(full_mode)
         leads+=len(full_mode)
     
-    print('rows:', rows)
-    print('leads:', leads)
+    # print('rows:', rows)
+    # print('leads:', leads)
     #Grid calibration
     #Each big grid corresponds to 0.2 seconds and 0.5 mV
     #To do: Select grid size in a better way
@@ -258,7 +258,7 @@ def ecg_plot(
         dc_offset = sample_rate*standard_values['dc_offset_length']*step + 4*step
     #Iterate through each lead in lead_index array.
     y_offset = (row_height/1)* (0 if full_mode is None else len(full_mode))
-    print('y_offset:', y_offset)
+    # print('y_offset:', y_offset)
     x_offset = 0
 
     text_bbox = []
@@ -358,13 +358,13 @@ def ecg_plot(
         end_ind = round((x_offset + dc_offset + x_gap + len(ecg[leadName])*step)*x_grid_dots/x_grid_size)
 
     #Plotting longest lead for 12 seconds
-    print('---')
+    # print('---')
     y_offset = 0
     if( (full_mode is not None) and (full_mode!="None") and (None not in full_mode) and ("None" not in full_mode)):
-        print(full_mode)
+        # print(full_mode)
         
         for k, f in enumerate(reversed(full_mode)):
-            print('iter', k, f)
+            # print('iter', k, f)
             y_offset += row_height
             if(show_lead_name):
                 t1 = ax.text(x_gap, 
@@ -403,7 +403,7 @@ def ecg_plot(
             if(show_dc_pulse):
                 dc_full_lead_offset = sample_rate*standard_values['dc_offset_length']*step + 4*step
             
-            print('plot', 'full'+f)                   
+            # print('plot', 'full'+f)                   
             t1 = ax.plot(np.arange(0,len(ecg['full'+f])*step,step) + x_gap + dc_full_lead_offset, 
                         ecg['full'+f] + y_offset,
                         linewidth=line_width, 
@@ -459,7 +459,7 @@ def ecg_plot(
     #ax.text(2, 0.5, '25mm/s', fontsize=lead_fontsize)
     #ax.text(4, 0.5, '10mm/mV', fontsize=lead_fontsize)
     
-    print('lead_box:', lead_bbox)
+    # print('lead_box:', lead_bbox)
     plt.savefig(os.path.join(output_dir,tail +'.png'),dpi=resolution)
     plt.close(fig)
     plt.clf()
