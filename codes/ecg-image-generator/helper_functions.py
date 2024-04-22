@@ -153,7 +153,7 @@ def get_adc_gains(header, leads):
             if current_lead in leads:
                 j = leads.index(current_lead)
                 try:
-                    adc_gains[j] = float(entries[2].split('/')[0])
+                    adc_gains[j] = float(entries[2].split('/')[0].split('(')[0])
                 except:
                     pass
         else:
